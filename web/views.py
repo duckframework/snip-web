@@ -6,7 +6,7 @@ Views for the URL shortener.
 """
 from duck.settings import SETTINGS
 from duck.utils.path import joinpaths
-from duck.shortcuts import to_response, redirect, not_found404, static
+from duck.shortcuts import to_response, redirect, static_filepath, not_found404
 from duck.http.response import HttpResponse, FileResponse
 
 from web.ui.pages.home import HomePage
@@ -18,13 +18,10 @@ def robots(request):
     """
     robots_txt = joinpaths(SETTINGS['BASE_DIR'], "etc/robots.txt")
     return FileResponse(robots_txt)
-    
-    
+
+
 def favicon(request):
-    """
-    View for serving a favicon.
-    """
-    favicon = static("images/favicon.ico")
+    favicon = static_filepath("images/favicon.ico")
     return FileResponse(favicon)
 
 

@@ -232,6 +232,7 @@ CSP_TRUSTED_SOURCES: dict = {
     "font-src": [
         "'self'",
         "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com"
         # Add font/CDN sources, e.g. "https://fonts.gstatic.com"
     ],
     "connect-src": [
