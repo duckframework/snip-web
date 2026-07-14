@@ -12,6 +12,20 @@ from duck.backend.django.logging import SIMPLE_CONFIG
 from duck.settings import SETTINGS as DUCK_SETTINGS
 
 
+# Disable flock on termux
+if "com.termux" in os.environ.get("PREFIX", ""):
+    from django.core.files import locks
+
+    def termux_lock(file, flags):
+        return True
+
+    def termux_unlock(file):
+        return True
+
+    locks.lock = termux_lock
+    locks.unlock = termux_unlock
+
+    
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,7 +47,6 @@ ALLOWED_HOSTS = [
     DUCK_SETTINGS["DJANGO_SHARED_SECRET_DOMAIN"],
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,6 +59,15 @@ INSTALLED_APPS = [
     "web.backend.django.duckapp.core",
 ]
 
+
+MARTOR_ENABLE_CONFIGS = {
+    "emoji": "true",
+    "imgur": "false",
+    "mention": "false",
+    "jquery": "true",  # important for Django admin
+    "living": "false",
+    "spellcheck": "false",
+}
 
 # Middleware configuration
 MIDDLEWARE = [
@@ -100,17 +122,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "web.backend.django.duckapp.duckapp.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv('DB_NAME'),
+        "USER": os.getenv('DB_USER'),
+        "PASSWORD": os.getenv("DB_PWD"),
+        "HOST": os.getenv('DB_HOST'),
+        "PORT": os.getenv('DB_PORT'),
+    },
+}
+
+if DEBUG:
+    DATABASES["default"] =  {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
