@@ -1,4 +1,4 @@
 git+https://github.com/duckframework/duck.git
 uvloop
-
+psycopg[binary]
 
